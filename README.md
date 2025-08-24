@@ -1,11 +1,6 @@
 # Online-Courses-Analysis-Power-BI-dashboard
 A complete, end-to-end Power BI project that analyzes recorded online courses collected from multiple EdTech platforms. The dashboard reveals which course types and skills are most popular, how language/subtitles affect viewership, which instructors consistently earn top ratings, and how course duration relates to audience engagement.
 
-<p align="center">
-  <img src="assets/Online_Course_Dashboard-1.png" alt="Online Courses Analysis Dashboard" width="85%"/>
-</p>
-
----
 
 ## Quick Links
 - PBIX: `Online_Courses_Analysis.pbix`  
@@ -201,24 +196,6 @@ Suggested bins for Duration chart: create a Grouping on Duration (Hours) (e.g., 
 - Course Type slicer to isolate Courses, Specializations, Projects, and Professional Certificates.
 - For the Top-3 Instructors visual, set the visual-level filter -> Top N = 3 by [Instructor Rating] and add [Avg Views] as a tie-breaker if needed.
 
----
-
-## How to Reproduce (Step-by-Step)
-1. Clone this repo and open `Online_Courses_Analysis.pbix` in Power BI Desktop (2023+).
-2. Put the CSVs/Excel under `data/` and update the Data Source Settings if prompted.
-3. In Power Query, apply the transformations listed above, especially the Duration (Hours) normalization.
-4. Create relationships:
-   - categories[Category] -> courses[Category] (1:*)
-   - categories[SubCategory] -> courses[SubCategory] (1:*)
-   - languages[Language] -> courses[Language] (1:*)
-   - instructors[InstructorName] -> courses[InstructorName] (1:*)
-   - courses[CourseID] <-> course_skills[CourseID] (1:*), and skills[Skill] <-> course_skills[Skill] (1:*)
-5. Create the DAX measures above.
-6. Rebuild visuals following the Dashboard Pages & Visuals section (use the screenshot as your guide).
-7. Save and refresh. Publish to Power BI Service if needed.
-
----
-
 ## Insights Highlighted by the Sample Screenshot
 - Course Type Popularity: "Course" dominates viewership versus Specializations/Projects/Certificates.
 - Language Mix: English accounts for the bulk of courses; other languages form small but important niches.
@@ -256,17 +233,9 @@ Final numbers will vary with your actual dataset. Use the measures here to repro
 - Power BI Desktop (June 2023 or later recommended)
 - (Optional) DAX Studio for diagnostics
 
----
-
-## License
-MIT — feel free to use and adapt with attribution.
-
----
-
 ## Author
 Md Shahid Afridi (MS_AFRIDI)  
-Data Scientist & ML Engineer | Python • SQL • Power BI • ML  
-Portfolio & projects: (add your links here)
+Data Analyst & Power BI Developer | Python • SQL • Power BI • ML  
 
 ---
 
