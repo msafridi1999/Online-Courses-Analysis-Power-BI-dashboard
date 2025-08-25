@@ -84,111 +84,29 @@ All visuals shown in the screenshot are interactive with slicers for Category, S
 ---
 
 ## DAX Measures (copy/paste)
-Note: Rename table/column names to match your model. These measures are designed to work with a star schema (facts + dims + bridge).
+1. Rank_Category_By_Avg_Views = 
+ IF(RANKX(ALL(Online_Courses[Category]),Calculate(Average(Online_Courses[Number of viewers])))<6,
+        CALCULATE(AVERAGE(Online_Courses[Number of viewers])),
+        BLANK())
 
-```DAX
--- BASIC COUNTS
-Total Courses =
-DISTINCTCOUNT ( courses[CourseID] )
+ 2. Instructor_Rating = IF(RANKX(ALL(Teachers[Instructors]),CALCULATE(AVERAGE(Teachers[Rating])))<=3,
+                           CALCULATE(AVERAGE(Teachers[Rating])),
+                           BLANK())
 
-Total Instructors =
-DISTINCTCOUNT ( instructors[InstructorName] )
+## Custom Column
+Count of Skills Provided=Text.Length([Skills])-Text.Length(Text.Replace([Skills],
+",",""))
 
-Course Count =
-COUNTROWS ( courses )
-
--- VIEWS
-Total Views =
-SUM ( courses[Views] )
-
-Avg Views =
-AVERAGE ( courses[Views] )
-
-Avg Views (Per Course) =
-DIVIDE ( [Total Views], [Total Courses] )
-
--- DURATION (HOURS) - CALCULATED COLUMN (in 'courses')
-Duration (Hours) =
-VAR unit = courses[DurationUnit]
-VAR raw  = VALUE ( courses[DurationRaw] )
-RETURN
-    SWITCH (
-        TRUE (),
-        unit = "hours",     raw,
-        unit = "months",    raw * 60,
-        unit = "flexible",  200,
-        BLANK ()
-    )
-
--- AVERAGES FOR TABLES
-Average Duration (Hours) =
-AVERAGE ( courses[Duration (Hours)] )
-
-Average Skill Count =
-AVERAGE ( courses[SkillCount] )
-
--- LANGUAGE SHARE
-Language Course Count =
-CALCULATE ( [Total Courses], ALLSELECTED ( languages[Language] ) )
-
-Language Share % =
-DIVIDE (
-    [Total Courses],
-    CALCULATE ( [Total Courses], ALL ( languages[Language] ) ),
-    0
-)
-
--- SKILLS: assumes a bridge table `course_skills (CourseID, Skill)`
-Courses per Skill =
-DISTINCTCOUNT ( course_skills[CourseID] )
-
--- RANKING
-Rank Category by Avg Views =
-RANKX (
-    ALL ( categories[Category] ),
-    CALCULATE ( [Avg Views] ),
-    ,
-    DESC,
-    DENSE
-)
-
--- INSTRUCTORS
-Instructor Rating =
-AVERAGE ( courses[InstructorRating] )
-
--- For a Top N visual: use the Filter pane -> Top N = 3 by [Instructor Rating]
--- Optional tie-breaker rank for display:
-Instructor Rank (by Rating, then Views) =
-RANKX (
-    ALLSELECTED ( instructors[InstructorName] ),
-    [Instructor Rating] * 1000000 + [Avg Views],
-    ,
-    DESC,
-    DENSE
-)
-
--- SUBTITLES & VIEWS
-Avg Views by Subtitles Count =
-AVERAGEX (
-    VALUES ( courses[SubtitleLanguageCount] ),
-    CALCULATE ( [Avg Views] )
-)
-
--- TOP 5 CATEGORIES (FOR LANGUAGE PREFERENCE ANALYSIS)
-Is Top 5 Category (by Views) =
-VAR _top =
-    TOPN ( 5, VALUES ( categories[Category] ), [Total Views], DESC )
-RETURN
-    IF (
-        CONTAINS ( _top, categories[Category], SELECTEDVALUE ( categories[Category] ) ),
-        1,
-        0
-    )
-```
-
-Suggested bins for Duration chart: create a Grouping on Duration (Hours) (e.g., 0-20, 21-40, ..., or 0-100, 101-200, ... depending on your distribution).
-
----
+## Custom Column
+Duration in hours= if Text.Contains(Text.Lower([Duration]),"month") then
+Number.FromText(Text.Select([Duration],{"0".."9"}))*60
+else if Text.Contains(Text.Lower([Duration]),"hour") then
+Number.FromText(Text.Select([Duration],{"0".."9"}))
+else if Text.Contains(Text.Lower([Duration]),"minutes") then
+Number.FromText(Text.Select([Duration],{"0".."9"}))/60
+else 200
+## Custom Column
+3. custom=List.Count(Text.Split([Subtitle Languages],","))
 
 ## Interactions & Slicers
 - Category / Sub-Category buttons at the top filter all visuals.
