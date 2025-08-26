@@ -83,7 +83,7 @@ All visuals shown in the screenshot are interactive with slicers for Category, S
 
 ---
 
-## DAX Measures (copy/paste)
+## DAX Measures 
 1. Rank_Category_By_Avg_Views = 
  IF(RANKX(ALL(Online_Courses[Category]),Calculate(Average(Online_Courses[Number of viewers])))<6,
         CALCULATE(AVERAGE(Online_Courses[Number of viewers])),
